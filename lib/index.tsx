@@ -34,7 +34,7 @@ export interface IProps {
     eyeColor?: EyeColor | [EyeColor, EyeColor, EyeColor];
     qrStyle?: 'squares' | 'dots' | 'fluid';
     style?: React.CSSProperties;
-    id?: string;
+    id?: string
 }
 
 interface ICoordinates {
@@ -401,23 +401,23 @@ export class QRCode extends React.Component<IProps, {}> {
             }
             image.onload = (e: Event) => {
                 ctx.save();
-
+        
                 const dWidthLogo = logoWidth || size * 0.2;
-                const dHeightLogo = logoHeight || dWidthLogo;
+                const dHeightLogo = logoHeight || dWidthLogo; // Asegurar proporción cuadrada
                 const dxLogo = ((size - dWidthLogo) / 2);
                 const dyLogo = ((size - dHeightLogo) / 2);
-
+        
+                // Aplicar padding si logoPaddingStyle es 'circle'
                 if (removeQrCodeBehindLogo || logoPadding) {
                     ctx.beginPath();
-
-                    ctx.strokeStyle = bgColor;
-                    ctx.fillStyle = bgColor;
-
+                    ctx.strokeStyle = bgColor; // Establecer color de fondo
+                    ctx.fillStyle = bgColor; // Establecer color de fondo
+        
                     const dWidthLogoPadding = dWidthLogo + (2 * logoPadding);
                     const dHeightLogoPadding = dHeightLogo + (2 * logoPadding);
                     const dxLogoPadding = dxLogo + offset - logoPadding;
                     const dyLogoPadding = dyLogo + offset - logoPadding;
-
+        
                     if (logoPaddingStyle === 'circle') {
                         const dxCenterLogoPadding = dxLogoPadding + (dWidthLogoPadding / 2);
                         const dyCenterLogoPadding = dyLogoPadding + (dHeightLogoPadding / 2);
@@ -428,9 +428,18 @@ export class QRCode extends React.Component<IProps, {}> {
                         ctx.fillRect(dxLogoPadding, dyLogoPadding, dWidthLogoPadding, dHeightLogoPadding);
                     }
                 }
-
+        
+                // Aplicar recorte circular al logo si logoPaddingStyle es 'circle'
+                if (logoPaddingStyle === 'circle') {
+                    ctx.beginPath();
+                    ctx.arc(dxLogo + dWidthLogo / 2 + offset, dyLogo + dHeightLogo / 2 + offset, dWidthLogo / 2, 0, 2 * Math.PI);
+                    ctx.clip();
+                }
+        
+                // Dibujar la imagen del logo
                 ctx.globalAlpha = logoOpacity;
                 ctx.drawImage(image, dxLogo + offset, dyLogo + offset, dWidthLogo, dHeightLogo);
+        
                 ctx.restore();
                 if (logoOnLoad) {
                     logoOnLoad(e);
@@ -438,6 +447,7 @@ export class QRCode extends React.Component<IProps, {}> {
             };
             image.src = logoImage;
         }
+        
     }
 
     render() {

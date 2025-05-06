@@ -313,13 +313,14 @@ var QRCode = /** @class */ (function (_super) {
             image_1.onload = function (e) {
                 ctx.save();
                 var dWidthLogo = logoWidth || size * 0.2;
-                var dHeightLogo = logoHeight || dWidthLogo;
+                var dHeightLogo = logoHeight || dWidthLogo; // Asegurar proporción cuadrada
                 var dxLogo = ((size - dWidthLogo) / 2);
                 var dyLogo = ((size - dHeightLogo) / 2);
+                // Aplicar padding si logoPaddingStyle es 'circle'
                 if (removeQrCodeBehindLogo || logoPadding) {
                     ctx.beginPath();
-                    ctx.strokeStyle = bgColor;
-                    ctx.fillStyle = bgColor;
+                    ctx.strokeStyle = bgColor; // Establecer color de fondo
+                    ctx.fillStyle = bgColor; // Establecer color de fondo
                     var dWidthLogoPadding = dWidthLogo + (2 * logoPadding);
                     var dHeightLogoPadding = dHeightLogo + (2 * logoPadding);
                     var dxLogoPadding = dxLogo + offset - logoPadding;
@@ -335,6 +336,13 @@ var QRCode = /** @class */ (function (_super) {
                         ctx.fillRect(dxLogoPadding, dyLogoPadding, dWidthLogoPadding, dHeightLogoPadding);
                     }
                 }
+                // Aplicar recorte circular al logo si logoPaddingStyle es 'circle'
+                if (logoPaddingStyle === 'circle') {
+                    ctx.beginPath();
+                    ctx.arc(dxLogo + dWidthLogo / 2 + offset, dyLogo + dHeightLogo / 2 + offset, dWidthLogo / 2, 0, 2 * Math.PI);
+                    ctx.clip();
+                }
+                // Dibujar la imagen del logo
                 ctx.globalAlpha = logoOpacity;
                 ctx.drawImage(image_1, dxLogo + offset, dyLogo + offset, dWidthLogo, dHeightLogo);
                 ctx.restore();
